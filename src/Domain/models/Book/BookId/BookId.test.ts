@@ -25,4 +25,16 @@ describe('BookId', () => {
     const bookId = new BookId('4167158051');
     expect(bookId.toISBN()).toBe('ISBN4-16-715805-1');
   });
+
+
+  // 異常系
+  test('不正な文字数の場合にエラーを投げる', () => {
+    // 境界値のテスト
+    expect(() => new BookId('1'.repeat(101))).toThrow('ISBNの文字数が不正です');
+    expect(() => new BookId('1'.repeat(9))).toThrow('ISBNの文字数が不正です');
+  });
+
+  test('不正なフォーマットの場合にエラーを投げる', () => {
+    expect(() => new BookId('9994167158057')).toThrow('不正なISBNの形式です');
+  });
 });
