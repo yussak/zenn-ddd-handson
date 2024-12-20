@@ -28,7 +28,7 @@ export class BookId {
 
   private isValidIsbn13(isbn13: string): boolean {
     // 実際にはちゃんとロジックを書く
-    return isbn13.length === 13;
+    return isbn13.startsWith('978') && isbn13.length === 13;
   }
 
   equals(other: BookId): boolean {
