@@ -52,5 +52,25 @@ describe('Book', () => {
       const book = Book.reconstruct(bookId, title, price, stock);
       expect(() => book.delete()).not.toThrow();
     });
-  })
+  });
+
+  describe('isSaleable', () => {
+    it('在庫あり、在庫数が整数の場合はtrueを返す', () => {
+      const stock = Stock.reconstruct(stockId, quantityAvailable, status);
+      const book = Book.reconstruct(bookId, title, price, stock);
+      expect(book.isSaleable()).toBeTruthy();
+    });
+
+    it('在庫なし、在庫数が0の場合はfalseを返す', () => {
+      const notQuantityAvailable = new QuantityAvailable(0);
+      const notOnSaleStatus = new Status(StatusEnum.OutOfStock);
+      const stock = Stock.reconstruct(
+        stockId,
+        notQuantityAvailable,
+        notOnSaleStatus,
+      );
+      const book = Book.reconstruct(bookId, title, price, stock);
+      expect(book.isSaleable()).toBeFalsy();
+    });
+  });
 })
