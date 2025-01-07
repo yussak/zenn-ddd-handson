@@ -23,7 +23,7 @@ export class Stock {
 
   public delete() {
     if (this.status.value !== StatusEnum.OutOfStock) {
-      throw new Error(' 在庫がある場合削除できません');
+      throw new Error('在庫がある場合削除できません');
     }
   }
 

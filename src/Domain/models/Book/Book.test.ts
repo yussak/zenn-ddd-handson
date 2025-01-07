@@ -1,7 +1,9 @@
 import { Book } from "./Book";
 import { BookId } from "./BookId/BookId";
 import { Price } from "./Price/Price";
+import { QuantityAvailable } from "./Stock/QuantityAvailable/QuantityAvailable";
 import { Status, StatusEnum } from "./Stock/Status/Status";
+import { Stock } from "./Stock/Stock";
 import { StockId } from "./Stock/StockId/StockId";
 import { Title } from "./Title/Title";
 
@@ -10,6 +12,11 @@ jest.mock('nanoid', () => ({
 }));
 
 describe('Book', () => {
+  const stockId = new StockId('abc');
+  const quantityAvailable = new QuantityAvailable(100);
+  const status = new Status(StatusEnum.InStock);
+  const stock = Stock.reconstruct(stockId, quantityAvailable, status);
+
   const bookId = new BookId('9784167158057');
   const title = new Title('吾輩は猫である');
   const price = new Price({
@@ -26,6 +33,24 @@ describe('Book', () => {
       expect(book.price.equals(price)).toBeTruthy();
       expect(book.stockId.equals(new StockId('testIdWithExactLength'))).toBeTruthy();
       expect(book.status.equals(new Status(StatusEnum.OutOfStock))).toBeTruthy();
+    });
+  });
+
+  describe('delete', () => {
+    it('在庫有りの場合はエラーを投げる', () => {
+      const book = Book.reconstruct(bookId, title, price, stock);
+      expect(() => book.delete()).toThrow('在庫がある場合削除できません');
+    });
+    it('在庫なしの場合はエラーを投げない', () => {
+      const notOnSaleStatus = new Status(StatusEnum.OutOfStock);
+      const notQuantityAvailable = new QuantityAvailable(0);
+      const stock = Stock.reconstruct(
+        stockId,
+        notQuantityAvailable,
+        notOnSaleStatus,
+      )
+      const book = Book.reconstruct(bookId, title, price, stock);
+      expect(() => book.delete()).not.toThrow();
     });
   })
 })
