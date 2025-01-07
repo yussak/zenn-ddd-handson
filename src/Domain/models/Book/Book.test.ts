@@ -73,4 +73,43 @@ describe('Book', () => {
       expect(book.isSaleable()).toBeFalsy();
     });
   });
+
+  describe('increaseStock', () => {
+    it('stock.increaseQuantityが呼ばれる', () => {
+      const book = Book.reconstruct(bookId, title, price, stock);
+      const spy = jest.spyOn(stock, 'increaseQuantity');
+      book.increaseStock(10);
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('decreaseStock', () => {
+    it('stock.decreaseQuantityが呼ばれる', () => {
+      const book = Book.reconstruct(bookId, title, price, stock);
+      const spy = jest.spyOn(stock, 'decreaseQuantity');
+      book.decreaseStock(10);
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('changeTitle', () => {
+    it('titleを変更する', () => {
+      const book = Book.reconstruct(bookId, title, price, stock);
+      const newTitle = new Title('坊ちゃん');
+      book.changeTitle(newTitle);
+      expect(book.title.equals(newTitle)).toBeTruthy();
+    });
+  });
+
+  describe('changePrice', () => {
+    it('priceを変更する', () => {
+      const book = Book.reconstruct(bookId, title, price, stock);
+      const newPrice = new Price({
+        amount: 880,
+        currency: 'JPY',
+      });
+      book.changePrice(newPrice);
+      expect(book.price.equals(newPrice)).toBeTruthy();
+    });
+  });
 })
